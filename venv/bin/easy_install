@@ -1,4 +1,5 @@
-#!/Users/Daniel/Desktop/ToHacks2020/venv/bin/python3
+#!/Users/Daniel/Desktop/ToHacks2020/venv/bin/python3.6
+
 # -*- coding: utf-8 -*-
 import re
 import sys
