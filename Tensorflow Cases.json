@@ -1,0 +1,6 @@
+{"Responses": [
+    {"tag": "check", "patterns": ["Do you work?", "Are you functional?", "Are you brain dead?"],
+     "responses": ["Of course not boss!", "I have brain cancer, of course I'm not!", "The real question is: are you?"]}
+    {"tag": "quarantine", "patterns": ["I'm bored.", "I've been cooped up for weeks.", "Please talk to me, I'm going insane."]
+     "responses": ["So am I.", "Why do you think I exist.", "What is time though?"]}
+]}
