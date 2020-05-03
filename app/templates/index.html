@@ -3,11 +3,12 @@
 <h1>Say Hello To COVID Companion!</h1>
 <div class="u-full-width" class="container" id="scrollbar">
 </div>
-
-<form id='chatbox' action="/bot" method="POST">
+<div id="formholder">
+<form class="u-full-width" id='chatbox' action="/bot" method="POST">
     <input type="text" id="message" name="message">
-    <input type="submit">
+    <input class="submitbutton" type="submit">
 </form>
+</div>
 <script>
     const element = document.querySelector('form');
     element.addEventListener('submit', event => {

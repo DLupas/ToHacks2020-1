@@ -1,2 +1,2 @@
-model_checkpoint_path: "/Users/Daniel/Desktop/ToHacks2020/Models/model.tflearn"
-all_model_checkpoint_paths: "/Users/Daniel/Desktop/ToHacks2020/Models/model.tflearn"
+model_checkpoint_path: "/Users/danny/Documents/GitHub/ToHacks2020/Models/model.tflearn"
+all_model_checkpoint_paths: "/Users/danny/Documents/GitHub/ToHacks2020/Models/model.tflearn"
