@@ -1,1 +1,21 @@
-<h1>Hello World</h1>
+<!DOCTYPE html>
+
+<head>
+    <title>Covid Companion</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href= "/app/static/styles/styles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <style>
+        #scrollbar {
+    overflow: scroll;
+    height: 300px;
+    width: 600px;
+}
+    </style>
+    {% block content %}
+    {% endblock %}
+</body>

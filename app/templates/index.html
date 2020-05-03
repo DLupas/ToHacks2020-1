@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Say Hello To COVID Companion!</h1>
+<div id="scrollbar">
+</div>
+
+<form id='chatbox' action="/bot" method="POST">
+    <input type="text" id="message" name="message">
+    <input type="submit">
+</form>
+<script>
+    const element = document.querySelector('form');
+    element.addEventListener('submit', event => {
+        event.preventDefault();
+        var userInput = document.querySelector('#chatbox');
+
+        var message = userInput.elements[0].value;
+        returnResponse(message);
+    });
+
+    function returnResponse(usermsg){
+        var scrollbox = document.querySelector("#scrollbar");
+
+        addMessageToChat("You: " + usermsg);
+        
+        $.post('/bot', {
+            message: usermsg
+        }).done(function(response){
+            addMessageToChat("Companion: " + response['phrase']);
+        }).fail(function(){
+            addMessageToChat("Error: Could not contact server")
+        });
+
+    function addMessageToChat(msgString){
+        var newElement = document.createElement("div"); //add the user's message to the chat
+        //newElement.setAttribute("id", "scrollbar");
+        newElement.innerHTML = msgString;
+        scrollbox.appendChild(newElement);
+    }
+    }
+
+</script>
+<script src="/app/static/js/bot.js"></script>
+{% endblock %}
