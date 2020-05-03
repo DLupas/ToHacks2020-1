@@ -25,7 +25,7 @@ def calcBag(sentence, possibleWords):
     return numpy.array(bag)
 
 def returnPhrase(userInput):
-    with open ("Cases.json") as file:
+    with open ("app/Cases.json") as file:
         data = json.load(file)
 
     try:
