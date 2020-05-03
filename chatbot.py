@@ -1,5 +1,4 @@
 import nltk
-nltk.download('punkt')
 from nltk import word_tokenize,sent_tokenize
 from nltk.stem.lancaster import LancasterStemmer
 stemmer = LancasterStemmer()
@@ -8,47 +7,68 @@ import tflearn
 import tensorflow as tf
 import random
 import json
+import pickle
+
+def calcBag(sentence, possibleWords):
+    bag = [0] * len(possibleWords)
+
+    sentence = nltk.word_tokenize(sentence)
+    sentence = [stemmer.stem(word.lower()) for word in sentence if word not in [",", ".", "?"]] #reduces the words
+
+    for word in sentence:
+        for pos, wordFromList in enumerate(possibleWords):
+            if wordFromList == word:
+                bag[pos] = 1
+    
+    return numpy.array(bag)
 
 with open ("Tensorflow Cases.json") as file:
     data = json.load(file)
 
-possibleWords = []
-finalLabels = []
-wordsByLabel = [] #same as possible words but grouped by label
-labelsWithDuplicates = []
+try:
+    with open("modeldata.pickle", "rb") as savedFile:
+        possibleWords, finalLabels, trainingSets, expectedOutput = pickle.load(savedFile)
+except:
+    possibleWords = []
+    finalLabels = []
+    wordsByLabel = [] #same as possible words but grouped by label
+    labelsWithDuplicates = []
 
-for response in data['Responses']:
-    finalLabels.append(response['tag'])
-    #gather words 
-    for pattern in response['patterns']:
-        words = nltk.word_tokenize(pattern)
-        words = [stemmer.stem(word.lower()) for word in words if word not in [",", ".", "?"]] #reduces the words
-        possibleWords.extend(words)
-        wordsByLabel.append(words)
-        labelsWithDuplicates.append(response['tag'])
+    for response in data['Responses']:
+        finalLabels.append(response['tag'])
+        #gather words 
+        for pattern in response['patterns']:
+            words = nltk.word_tokenize(pattern)
+            words = [stemmer.stem(word.lower()) for word in words if word not in [",", ".", "?"]] #reduces the words
+            possibleWords.extend(words)
+            wordsByLabel.append(words)
+            labelsWithDuplicates.append(response['tag'])
 
-possibleWords = sorted(list(set(possibleWords))) #remove duplicates
-finalLabels = sorted(finalLabels)
+    possibleWords = sorted(list(set(possibleWords))) #remove duplicates
+    finalLabels = sorted(finalLabels)
 
-trainingSets = []
-expectedOutput = []
+    trainingSets = []
+    expectedOutput = []
 
-for pos, wordsInLabel in enumerate(wordsByLabel):
-    bagOfWords = []
+    for pos, wordsInLabel in enumerate(wordsByLabel):
+        bagOfWords = []
 
-    for word in possibleWords:
-        doesAppear = 1 if word in wordsInLabel else 0 #creates a list with a 1 if the word appears out of the total list
-        bagOfWords.append(doesAppear)
+        for word in possibleWords:
+            doesAppear = 1 if word in wordsInLabel else 0 #creates a list with a 1 if the word appears out of the total list
+            bagOfWords.append(doesAppear)
 
-    trainingSets.append(bagOfWords)
+        trainingSets.append(bagOfWords)
 
-    outputRow = [0] * len(finalLabels) #There will only be a 1 per list, others are 0
-    correctTag = labelsWithDuplicates[pos] #sets which label corresponds to each set of words
-    outputRow[finalLabels.index(correctTag)] = 1
-    expectedOutput.append(outputRow)
+        outputRow = [0] * len(finalLabels) #There will only be a 1 per list, others are 0
+        correctTag = labelsWithDuplicates[pos] #sets which label corresponds to each set of words
+        outputRow[finalLabels.index(correctTag)] = 1
+        expectedOutput.append(outputRow)
 
-trainingSets = numpy.array(trainingSets)
-expectedOutput = numpy.array(expectedOutput)
+    trainingSets = numpy.array(trainingSets)
+    expectedOutput = numpy.array(expectedOutput)
+
+    with open("modeldata.pickle", "wb") as savedFile:
+        pickle.dump((possibleWords, finalLabels, trainingSets, expectedOutput), savedFile)
 
 #actual tensorflow now
 
@@ -62,5 +82,20 @@ net = tflearn.regression(net)
 
 model = tflearn.DNN(net)
 
-model.fit(trainingSets, expectedOutput, n_epoch=1000, batch_size=8, show_metric=True)
-model.save("model.tflearn")
+try:
+    model.load("Models/model.tflearn")
+except:
+    model.fit(trainingSets, expectedOutput, n_epoch=1000, batch_size=8, show_metric=True)
+    model.save("Models/model.tflearn")
+
+while True:
+    userInput = input("You: ")
+    likelyhoods = model.predict([calcBag(userInput, possibleWords)])
+    labelIndex = numpy.argmax(likelyhoods)
+    label = finalLabels[labelIndex]
+
+    for section in data['Responses']:
+        if section['tag'] == label:
+            responses = section['responses']
+
+    print(random.choice(responses))
