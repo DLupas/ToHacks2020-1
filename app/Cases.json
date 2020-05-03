@@ -5,10 +5,14 @@
      "responses": ["So am I.", "Why do you think I exist my friend?"]},
     {"tag": "info", "patterns": ["What's going on?", "How much longer until a cure?"],
      "responses": ["I am not certain, however you can check for information here: https://www.google.com/covid19/"]},
-    {"tag": "treatment", "patterns": ["I think I am infected, where should I go?','Someone in my family might have the disease, what do we do?"],
+    {"tag": "treatment", "patterns": ["I think I am infected, where should I go?","Someone in my family might have the disease, what do we do?"],
      "responses": ["My condolences. If you need to get testing, here is a map of some potential locations: https://www.peelregion.ca/coronavirus/testing/"]},
     {"tag": "groceries", "patterns": ["We need to get some groceries. Where can I go?", "Where to get groceries?", "What grocery stores are open?"]
      , "responses": ["All major grocery stores are currently open, however most have some form of social distancing measures in place."]},
     {"tag": "driving", "patterns": ["Where can I drive?", "What are the restrictions on driving?", "Can I go for a drive?"]
-     , "responses": "Currently in the GTA, there is a 1 person per car restriction on driving. If you can avoid driving, do so."}
+     , "responses": "Currently in the GTA, there is a 1 person per car restriction on driving. If you can avoid driving, do so."},
+    {"tag": "locations", "patterns": ["Where can I go?", "What can I do in quarantine?"],
+     "responses": "Most public spaces are closed, however grocery stores are open."},
+    {"tag": "goodbye", "patterns": ["Seeya!", "Farewell", "Au revoir", "Talk to you later"], "responses": ["Goodbye!", "Thank you!", " Same to you!"]},
+    {"tag": "hello", "patterns": ["Hi!", "Hello there!", "Greetings!", "Cheers!"], "responses": ["How are you doing?", "Thanks for asking!", " You doing good?"]}
 ]}
