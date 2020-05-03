@@ -22,11 +22,11 @@ def calcBag(sentence, possibleWords):
     
     return numpy.array(bag)
 
-with open ("Tensorflow Cases.json") as file:
+with open ("Cases.json") as file:
     data = json.load(file)
 
 try:
-    with open("modeldata.pickle", "rb") as savedFile:
+    with open("Models/modeldata.pickle", "rb") as savedFile:
         possibleWords, finalLabels, trainingSets, expectedOutput = pickle.load(savedFile)
 except:
     possibleWords = []
@@ -67,7 +67,7 @@ except:
     trainingSets = numpy.array(trainingSets)
     expectedOutput = numpy.array(expectedOutput)
 
-    with open("modeldata.pickle", "wb") as savedFile:
+    with open("Models/modeldata.pickle", "wb") as savedFile:
         pickle.dump((possibleWords, finalLabels, trainingSets, expectedOutput), savedFile)
 
 #actual tensorflow now
@@ -77,23 +77,27 @@ tf.reset_default_graph()
 net = tflearn.input_data(shape=[None, len(trainingSets[0])])
 net = tflearn.fully_connected(net, 8)
 net = tflearn.fully_connected(net, 8)
-net = tflearn.fully_connected(net, len(expectedOutput[0]))
+net = tflearn.fully_connected(net, len(expectedOutput[0]), activation="softmax")
 net = tflearn.regression(net)
 
 model = tflearn.DNN(net)
 
-try:
-    model.load("Models/model.tflearn")
-except:
-    model.fit(trainingSets, expectedOutput, n_epoch=1000, batch_size=8, show_metric=True)
-    model.save("Models/model.tflearn")
+# try:
+#     model.load("Models/model.tflearn")
+# except:
+#     model.fit(trainingSets, expectedOutput, n_epoch=1000, batch_size=8, show_metric=True)
+#     model.save("Models/model.tflearn")
+model.fit(trainingSets, expectedOutput, n_epoch=1000, batch_size=8, show_metric=True)
+model.save("Models/model.tflearn")
 
+#print(possibleWords, finalLabels)
 while True:
     userInput = input("You: ")
     likelyhoods = model.predict([calcBag(userInput, possibleWords)])
     labelIndex = numpy.argmax(likelyhoods)
     label = finalLabels[labelIndex]
 
+    responses = []
     for section in data['Responses']:
         if section['tag'] == label:
             responses = section['responses']
